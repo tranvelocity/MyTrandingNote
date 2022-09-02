@@ -1,1 +1,1 @@
-# MyTrandingNote
+# Trading Note Application

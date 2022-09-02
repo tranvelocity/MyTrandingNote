@@ -2,7 +2,7 @@
 
 set -eu
 
-URL=local.trandingnote.vn
+URL=local.tradingnote.vn
 cp .env.dev .env
 
 # Firing up Docker containers
