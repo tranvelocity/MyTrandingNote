@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "===> Start seeding database for each module"
+ModuleList=( Admin )
+for Module in ${ModuleList[*]}
+  do
+    sh app php artisan module:seed $Module
+  done
+
+#for d in src/Modules/* ; do
+#    echo "$d" | cut -d "/" -f 3
+#done

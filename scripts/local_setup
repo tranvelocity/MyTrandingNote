@@ -9,17 +9,17 @@ cp .env.dev .env
 echo "===> Starting up Docker containers..."
 docker-compose up -d --build
 
-sh app cp .env.example .env
-sh app php artisan key:generate
-
 echo "===> Start installing composer"
+sh app cp .env.example .env
 sh app composer install
+sh app php artisan key:generate
 sh app composer dump-autoload
 
 echo "===> Database migration"
 sh app php artisan migrate:fresh --seed --force --env=local
-bash ./scripts/modules_seed_db
+# bash ./scripts/modules_seed_db
 sh app php artisan config:clear --env=local
+sh app php artisan cache:clear --env=local
 
 echo "===> Restart Docker containers..."
 docker-compose restart
