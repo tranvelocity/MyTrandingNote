@@ -1,0 +1,89 @@
+version: "3.7"
+
+networks:
+    app-network:
+        driver: bridge
+
+services:
+    datastore:
+      image: busybox
+      restart: always
+      stdin_open: true
+      tty: true
+      volumes:
+      - $PWD/src:/var/www
+      command: /bin/sh
+
+    app:
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        image: ${PHP_IMAGE}
+        container_name: ${PROJECT_NAME}_app
+        restart: unless-stopped
+        tty: true
+        working_dir: /var/www
+        volumes:
+            - ./src:/var/www
+        networks:
+            - app-network
+        environment:
+          SERVER_NAME: ${SERVER_NAME}
+          SSL: "true"
+
+    mysql:
+        image: ${MYSQL_IMAGE}
+        container_name: ${PROJECT_NAME}_mysql
+        restart: unless-stopped
+        tty: true
+        ports:
+          - 3306:3306
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - ./mysql/data:/var/lib/mysql
+        networks:
+            - app-network
+
+    nginx:
+        image: ${NGINX_IMAGE}
+        container_name: ${PROJECT_NAME}_nginx
+        restart: unless-stopped
+        tty: true
+        ports:
+          - 80:80
+          - 443:443
+        volumes:
+            - ./src:/var/www
+            - ./nginx/conf:/etc/nginx/conf.d
+        networks:
+            - app-network
+
+    redis:
+        image: ${REDIS_IMAGE}
+        container_name: ${PROJECT_NAME}_redis
+        restart: unless-stopped
+        tty: true
+        volumes:
+            - ./redis/data:/data
+        networks:
+            - app-network
+
+    phpmyadmin:
+        image: ${PHPMYADMIN_IMAGE}
+        container_name: ${PROJECT_NAME}_phpmyadmin
+        restart: unless-stopped
+        ports:
+            - 8200:80
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_USER: ${MYSQL_USER}
+            PMA_PASSWORD: ${MYSQL_PASSWORD}
+        networks:
+            - app-network

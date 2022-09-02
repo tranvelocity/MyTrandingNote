@@ -1,0 +1,17 @@
+.env
+node_modules
+mysql/
+redis/
+
+/src/storage/files
+/src/storage/temp
+/src/.github
+src/Modules/.php-cs-fixer.cache
+src/Modules/*/*.php-cs-fixer.cache
+
+# Other Laravel stuff
+/src/vendor
+
+# Editor related stuff
+.idea
+.DS_Store

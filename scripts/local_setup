@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -eu
+
+URL=local.trandingnote.vn
+cp .env.dev .env
+
+# Firing up Docker containers
+echo "===> Starting up Docker containers..."
+docker-compose up -d --build
+
+sh app cp .env.example .env
+sh app php artisan key:generate
+
+echo "===> Start installing composer"
+sh app composer install
+sh app composer dump-autoload
+
+echo "===> Database migration"
+sh app php artisan migrate:fresh --seed --force --env=local
+bash ./scripts/modules_seed_db
+sh app php artisan config:clear --env=local
+
+echo "===> Restart Docker containers..."
+docker-compose restart
+
+# Setting Hosts
+echo "===> Add domain to hosts file"
+sudo -- sh -c "grep -q '127.0.0.1 ${URL}' /etc/hosts || echo '127.0.0.1 ${URL}' >> /etc/hosts"
+
+echo "===> Local setup successfully finished!"
