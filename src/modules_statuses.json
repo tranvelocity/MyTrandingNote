@@ -1,0 +1,7 @@
+{
+    "Company": true,
+    "Stock": true,
+    "TradeHistory": true,
+    "Industry": true,
+    "Core": true
+}

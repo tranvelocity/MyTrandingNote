@@ -17,7 +17,7 @@ sh app composer dump-autoload
 
 echo "===> Database migration"
 sh app php artisan migrate:fresh --seed --force --env=local
-# bash ./scripts/modules_seed_db
+bash ./scripts/modules_seed_db
 sh app php artisan config:clear --env=local
 sh app php artisan cache:clear --env=local
 

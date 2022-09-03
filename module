@@ -1,0 +1,26 @@
+#!/bin/sh
+
+echo -n "Enter module name you want to make: "
+read MODULE_NAME
+
+# Shortcut to execute commands.
+docker-compose exec app bash -c "cd /var/www && php artisan module:make ${MODULE_NAME}"
+
+## Create necessary files
+docker-compose exec app bash -c "cd /var/www/Modules/${MODULE_NAME} && touch Routes/web.php"
+
+#### create files relevant to database
+docker-compose exec app bash -c "cd /var/www && php artisan module:make-factory ${MODULE_NAME} ${MODULE_NAME}"
+
+docker-compose exec app bash -c "cd /var/www && php artisan module:make-migration create_${MODULE_NAME}_table ${MODULE_NAME}"
+docker-compose exec app bash -c "cd /var/www && php artisan module:make-model ${MODULE_NAME} ${MODULE_NAME}"
+
+docker-compose exec app bash -c "cd /var/www && php artisan module:make-request Search${MODULE_NAME}Request ${MODULE_NAME}"
+docker-compose exec app bash -c "cd /var/www && php artisan module:make-request Create${MODULE_NAME}Request ${MODULE_NAME}"
+docker-compose exec app bash -c "cd /var/www && php artisan module:make-request Update${MODULE_NAME}Request ${MODULE_NAME}"
+
+#### Create Repositories directory and repository file
+docker-compose exec app bash -c "cd /var/www/Modules/${MODULE_NAME} && mkdir Repositories Service"
+docker-compose exec app bash -c "cd /var/www/Modules/${MODULE_NAME}/Repositories && touch ${MODULE_NAME}Repository.php"
+
+echo "Finished creating ${MODULE_NAME} module"

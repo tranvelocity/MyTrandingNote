@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "===> Start seeding database for each module"
-ModuleList=( Admin )
+ModuleList=( Company )
 for Module in ${ModuleList[*]}
   do
     sh app php artisan module:seed $Module
