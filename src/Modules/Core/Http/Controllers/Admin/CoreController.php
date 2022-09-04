@@ -14,7 +14,7 @@ class CoreController extends Controller
      */
     public function index()
     {
-        return view('core::test');
+        return view('core::index');
     }
 
     /**

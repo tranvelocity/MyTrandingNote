@@ -3,5 +3,6 @@
     "Stock": true,
     "TradeHistory": true,
     "Industry": true,
-    "Core": true
+    "Core": true,
+    "Template": true
 }
