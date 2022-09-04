@@ -18,6 +18,17 @@ class CoreServiceProvider extends ServiceProvider
     protected $moduleNameLower = 'core';
 
     /**
+     * Core module specific middleware.
+     *
+     * @var array
+     */
+    protected $middleware = [
+        'auth' => \Modules\Core\Http\Middleware\Authenticate::class,
+        'admin' => \Modules\Core\Http\Middleware\AdminMiddleware::class,
+        'can' => \Modules\Core\Http\Middleware\Authorization::class,
+    ];
+
+    /**
      * Boot the application events.
      *
      * @return void
@@ -28,6 +39,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'Database/Migrations'));
+        $this->registerMiddleware();
     }
 
     /**
@@ -37,6 +49,19 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(RouteServiceProvider::class);
+    }
+
+    /**
+     * Register the filters.
+     *
+     * @return void
+     */
+    private function registerMiddleware()
+    {
+        foreach ($this->middleware as $name => $middleware) {
+            $this->app['router']->aliasMiddleware($name, $middleware);
+        }
     }
 
     /**
